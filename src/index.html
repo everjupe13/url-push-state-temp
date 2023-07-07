@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check the url</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"
+    integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .container {
+      max-width: 700px;
+      padding: 0 15px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 0;
+    }
+
+    .mb-1 {
+      margin-bottom: 20px;
+    }
+
+    .mb-2 {
+      margin-bottom: 30px;
+    }
+
+    button {
+      margin-right: 15px;
+    }
+  </style>
+  <div class="container">
+
+    <h2>Check webview frame URL</h2>
+    <p class="mb-1">
+      <small>current url: <code id="url-out"></code></small>
+    </p>
+    <p>
+      <button onclick="changeUrlState('pending')">Click me</button> to change the URL to
+      <code>/?new_appointment_status=pending</code>
+    </p>
+    <p>
+      <button onclick="changeUrlState('success')">Click me</button> to change the URL to
+      <code>/?new_appointment_status=success</code>
+    </p>
+    <p>
+      <button onclick="changeUrlState('failed')">Click me</button> to change the URL to
+      <code>/?new_appointment_status=failed</code>
+    </p>
+    <p class="mb-2">
+      <button onclick="changeUrlState()">Reset</button> to reset the URL <code>/?new_appointment_status=failed</code>
+    </p>
+    <p>
+      <button onclick="procceedAll()">All</button> to proceed all states of the URL
+    </p>
+  </div>
+
+  <script>
+    const urlOut = document.querySelector('#url-out')
+    urlOut.textContent = window.location
+
+    function changeUrlState(state) {
+      const querySlug = 'new_appointment_status'
+      const url = new URL(location)
+      if (!state) {
+        if (url.searchParams.has(querySlug))
+          url.searchParams.delete(querySlug)
+      } else {
+        url.searchParams.set(querySlug, state)
+      }
+
+      window.history.pushState({}, '', url)
+      urlOut.textContent = window.location
+    }
+
+    let timeout1, timeout2, timeout3
+    function procceedAll() {
+      changeUrlState()
+      changeUrlState('pending')
+
+      timeout1 = setTimeout(() => {
+        changeUrlState('success')
+      }, 1000)
+      timeout2 = setTimeout(() => {
+        changeUrlState('failed')
+      }, 2000)
+      timeout1 = setTimeout(() => {
+        changeUrlState()
+      }, 3000)
+    }
+  </script>
+</body>
+
+</html>
